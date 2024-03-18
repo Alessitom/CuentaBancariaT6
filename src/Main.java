@@ -1,38 +1,34 @@
 import java.util.Scanner;
 
-
-
 public class Main {
-    // Declaramos el Scanner como una variable estática de la clase
     private static Scanner scanner = new Scanner(System.in);
-    
-    public static void main(String[] args) {
-        Banco banco = new Banco("Mi Banco");
+    private static Banco banco = new Banco("Mi Banco");
 
+    public static void main(String[] args) {
         int opcion;
         do {
             mostrarMenu();
             opcion = scanner.nextInt();
-            scanner.nextLine(); // Limpiar el buffer del Scanner
+            scanner.nextLine(); // Consumir la nueva línea después de nextInt()
 
             switch (opcion) {
                 case 1:
-                    agregarCuenta(banco);
+                    banco.agregarCuenta();
                     break;
                 case 2:
-                    consultarCuenta(banco);
+                    banco.consultarCuenta();
                     break;
                 case 3:
-                    borrarCuenta(banco);
+                    banco.borrarCuenta();
                     break;
                 case 4:
-                    ingresarDinero(banco);
+                    banco.ingresarDinero();
                     break;
                 case 5:
-                    retirarDinero(banco);
+                    banco.retirarDinero();
                     break;
                 case 6:
-                    listarCuentas(banco);
+                    banco.listarCuentas();
                     break;
                 case 0:
                     System.out.println("Saliendo del programa...");
@@ -55,77 +51,6 @@ public class Main {
         System.out.println("6. Listar cuentas");
         System.out.println("0. Salir");
         System.out.print("Seleccione una opción: ");
-    }
-
-    public static void agregarCuenta(Banco banco) {
-        System.out.print("Ingrese IBAN de la cuenta: ");
-        String iban = scanner.next();
-        System.out.print("Ingrese titular de la cuenta: ");
-        String titular = scanner.next();
-        System.out.print("Ingrese saldo inicial de la cuenta: ");
-        double saldo = scanner.nextDouble();
-
-        CuentaBancaria cuenta = new CuentaBancaria(iban, titular, saldo);
-        if (banco.agregarCuenta(cuenta)) {
-            System.out.println("Cuenta agregada exitosamente.");
-        } else {
-            System.out.println("No se pudo agregar la cuenta. El banco está lleno.");
-        }
-    }
-
-    public static void consultarCuenta(Banco banco) {
-        System.out.print("Ingrese IBAN de la cuenta a consultar: ");
-        String iban = scanner.next();
-        String informe = banco.consultarCuenta(iban);
-        if (informe != null) {
-            System.out.println(informe);
-        } else {
-            System.out.println("No se encontró la cuenta con IBAN: " + iban);
-        }
-    }
-
-    public static void borrarCuenta(Banco banco) {
-        System.out.print("Ingrese IBAN de la cuenta a borrar: ");
-        String iban = scanner.next();
-        if (banco.borrarCuenta(iban)) {
-            System.out.println("Cuenta con IBAN " + iban + " borrada exitosamente.");
-        } else {
-            System.out.println("No se encontró la cuenta con IBAN: " + iban);
-        }
-    }
-
-    public static void ingresarDinero(Banco banco) {
-        System.out.print("Ingrese IBAN de la cuenta en la que desea ingresar dinero: ");
-        String iban = scanner.next();
-        System.out.print("Ingrese la cantidad a ingresar: ");
-        double cantidad = scanner.nextDouble();
-        if (banco.ingresar(iban, cantidad)) {
-            System.out.println("Ingreso realizado exitosamente.");
-        } else {
-            System.out.println("No se encontró la cuenta con IBAN: " + iban);
-        }
-    }
-
-    public static void retirarDinero(Banco banco) {
-        System.out.print("Ingrese IBAN de la cuenta de la que desea retirar dinero: ");
-        String iban = scanner.next();
-        System.out.print("Ingrese la cantidad a retirar: ");
-        double cantidad = scanner.nextDouble();
-        if (banco.retirar(iban, cantidad)) {
-            System.out.println("Retiro realizado exitosamente.");
-        } else {
-            System.out.println("No se encontró la cuenta con IBAN: " + iban + " o saldo insuficiente.");
-        }
-    }
-
-    public static void listarCuentas(Banco banco) {
-        String informe = banco.listadoCuentas();
-        if (!informe.isEmpty()) {
-            System.out.println("Listado de cuentas:");
-            System.out.println(informe);
-        } else {
-            System.out.println("No hay cuentas registradas en el banco.");
-        }
     }
 }
 
@@ -190,10 +115,12 @@ class Banco {
     private String nombre;
     private CuentaBancaria[] cuentas;
     private int numeroCuentas;
+    public static final int MAX_CUENTAS = 100;
+    private static Scanner scanner = new Scanner(System.in);
 
     public Banco(String nombre) {
         this.nombre = nombre;
-        this.cuentas = new CuentaBancaria[100];
+        cuentas = new CuentaBancaria[MAX_CUENTAS];
         this.numeroCuentas = 0;
     }
 
@@ -205,15 +132,102 @@ class Banco {
         this.nombre = nombre;
     }
 
-    public boolean agregarCuenta(CuentaBancaria cuenta) {
-        if (numeroCuentas < 100) {
+    public boolean agregarCuenta() {
+        if (numeroCuentas < MAX_CUENTAS) { // Verificamos que no se exceda el límite
+            System.out.print("Ingrese IBAN de la cuenta: ");
+            String iban = scanner.next();
+            scanner.nextLine(); // Consumir la nueva línea después de next()
+            System.out.print("Ingrese titular de la cuenta: ");
+            String titular = scanner.nextLine();
+            System.out.print("Ingrese saldo inicial de la cuenta: ");
+            double saldo = scanner.nextDouble();
+
+            CuentaBancaria cuenta = new CuentaBancaria(iban, titular, saldo);
+            if (agregarCuenta(cuenta)) {
+                System.out.println("Cuenta agregada exitosamente.");
+                return true;
+            } else {
+                System.out.println("No se pudo agregar la cuenta. El banco está lleno.");
+                return false;
+            }
+        } else {
+            System.out.println("No se pudo agregar la cuenta. El banco está lleno.");
+            return false;
+        }
+    }
+
+    public boolean consultarCuenta() {
+        System.out.print("Ingrese IBAN de la cuenta a consultar: ");
+        String iban = scanner.next();
+        String informe = consultarCuenta(iban);
+        if (informe != null) {
+            System.out.println(informe);
+            return true;
+        } else {
+            System.out.println("No se encontró la cuenta con IBAN: " + iban);
+            return false;
+        }
+    }
+
+    public boolean borrarCuenta() {
+        System.out.print("Ingrese IBAN de la cuenta a borrar: ");
+        String iban = scanner.next();
+        if (borrarCuenta(iban)) {
+            System.out.println("Cuenta con IBAN " + iban + " borrada exitosamente.");
+            return true;
+        } else {
+            System.out.println("No se encontró la cuenta con IBAN: " + iban);
+            return false;
+        }
+    }
+
+    public boolean ingresarDinero() {
+        System.out.print("Ingrese IBAN de la cuenta en la que desea ingresar dinero: ");
+        String iban = scanner.next();
+        System.out.print("Ingrese la cantidad a ingresar: ");
+        double cantidad = scanner.nextDouble();
+        if (ingresar(iban, cantidad)) {
+            System.out.println("Ingreso realizado exitosamente.");
+            return true;
+        } else {
+            System.out.println("No se encontró la cuenta con IBAN: " + iban);
+            return false;
+        }
+    }
+
+    public boolean retirarDinero() {
+        System.out.print("Ingrese IBAN de la cuenta de la que desea retirar dinero: ");
+        String iban = scanner.next();
+        System.out.print("Ingrese la cantidad a retirar: ");
+        double cantidad = scanner.nextDouble();
+        if (retirar(iban, cantidad)) {
+            System.out.println("Retiro realizado exitosamente.");
+            return true;
+        } else {
+            System.out.println("No se encontró la cuenta con IBAN: " + iban + " o saldo insuficiente.");
+            return false;
+        }
+    }
+
+    public void listarCuentas() {
+        String informe = listadoCuentas();
+        if (!informe.isEmpty()) {
+            System.out.println("Listado de cuentas:");
+            System.out.println(informe);
+        } else {
+            System.out.println("No hay cuentas registradas en el banco.");
+        }
+    }
+
+    private boolean agregarCuenta(CuentaBancaria cuenta) {
+        if (numeroCuentas < MAX_CUENTAS) {
             cuentas[numeroCuentas++] = cuenta;
             return true;
         }
         return false;
     }
 
-    public String consultarCuenta(String iban) {
+    private String consultarCuenta(String iban) {
         for (int i = 0; i < numeroCuentas; i++) {
             if (cuentas[i].getIban().equals(iban)) {
                 return cuentas[i].toString();
@@ -222,7 +236,7 @@ class Banco {
         return null;
     }
 
-    public boolean borrarCuenta(String iban) {
+    private boolean borrarCuenta(String iban) {
         for (int i = 0; i < numeroCuentas; i++) {
             if (cuentas[i].getIban().equals(iban)) {
                 cuentas[i] = cuentas[numeroCuentas - 1];
@@ -234,7 +248,7 @@ class Banco {
         return false;
     }
 
-    public boolean ingresar(String iban, double cantidad) {
+    private boolean ingresar(String iban, double cantidad) {
         for (int i = 0; i < numeroCuentas; i++) {
             if (cuentas[i].getIban().equals(iban)) {
                 cuentas[i].ingresar(cantidad);
@@ -244,7 +258,7 @@ class Banco {
         return false;
     }
 
-    public boolean retirar(String iban, double cantidad) {
+    private boolean retirar(String iban, double cantidad) {
         for (int i = 0; i < numeroCuentas; i++) {
             if (cuentas[i].getIban().equals(iban)) {
                 return cuentas[i].retirar(cantidad);
@@ -253,7 +267,7 @@ class Banco {
         return false;
     }
 
-    public String listadoCuentas() {
+    private String listadoCuentas() {
         StringBuilder informe = new StringBuilder();
         for (int i = 0; i < numeroCuentas; i++) {
             informe.append(cuentas[i].toString()).append("\n");
