@@ -1,9 +1,12 @@
 import java.util.Scanner;
 
-public class Main {
 
+
+public class Main {
+    // Declaramos el Scanner como una variable estática de la clase
+    private static Scanner scanner = new Scanner(System.in);
+    
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         Banco banco = new Banco("Mi Banco");
 
         int opcion;
@@ -14,19 +17,19 @@ public class Main {
 
             switch (opcion) {
                 case 1:
-                    agregarCuenta(banco, scanner);
+                    agregarCuenta(banco);
                     break;
                 case 2:
-                    consultarCuenta(banco, scanner);
+                    consultarCuenta(banco);
                     break;
                 case 3:
-                    borrarCuenta(banco, scanner);
+                    borrarCuenta(banco);
                     break;
                 case 4:
-                    ingresarDinero(banco, scanner);
+                    ingresarDinero(banco);
                     break;
                 case 5:
-                    retirarDinero(banco, scanner);
+                    retirarDinero(banco);
                     break;
                 case 6:
                     listarCuentas(banco);
@@ -54,7 +57,7 @@ public class Main {
         System.out.print("Seleccione una opción: ");
     }
 
-    public static void agregarCuenta(Banco banco, Scanner scanner) {
+    public static void agregarCuenta(Banco banco) {
         System.out.print("Ingrese IBAN de la cuenta: ");
         String iban = scanner.next();
         System.out.print("Ingrese titular de la cuenta: ");
@@ -70,7 +73,7 @@ public class Main {
         }
     }
 
-    public static void consultarCuenta(Banco banco, Scanner scanner) {
+    public static void consultarCuenta(Banco banco) {
         System.out.print("Ingrese IBAN de la cuenta a consultar: ");
         String iban = scanner.next();
         String informe = banco.consultarCuenta(iban);
@@ -81,7 +84,7 @@ public class Main {
         }
     }
 
-    public static void borrarCuenta(Banco banco, Scanner scanner) {
+    public static void borrarCuenta(Banco banco) {
         System.out.print("Ingrese IBAN de la cuenta a borrar: ");
         String iban = scanner.next();
         if (banco.borrarCuenta(iban)) {
@@ -91,7 +94,7 @@ public class Main {
         }
     }
 
-    public static void ingresarDinero(Banco banco, Scanner scanner) {
+    public static void ingresarDinero(Banco banco) {
         System.out.print("Ingrese IBAN de la cuenta en la que desea ingresar dinero: ");
         String iban = scanner.next();
         System.out.print("Ingrese la cantidad a ingresar: ");
@@ -103,7 +106,7 @@ public class Main {
         }
     }
 
-    public static void retirarDinero(Banco banco, Scanner scanner) {
+    public static void retirarDinero(Banco banco) {
         System.out.print("Ingrese IBAN de la cuenta de la que desea retirar dinero: ");
         String iban = scanner.next();
         System.out.print("Ingrese la cantidad a retirar: ");
