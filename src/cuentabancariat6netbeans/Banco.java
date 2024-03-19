@@ -67,13 +67,22 @@ public class Banco {
         return false;
     }
 
-    public boolean retirar(String iban, double importe) {
-        Cuenta cuenta = buscarCuenta(iban);
-        if (cuenta != null) {
+  public boolean retirar(String iban, double importe) {
+    Cuenta cuenta = buscarCuenta(iban);
+    if (cuenta != null) {
+        // Permitir retirar cualquier cantidad, incluso si es más grande que el saldo actual
+        if (importe >0) {
             return cuenta.retirar(importe);
+        } else {
+            System.out.println("El importe a retirar debe ser igual o mayor que 0.");
+            return false;
         }
-        return false;
     }
+    return false;
+}
+
+
+
 
     public boolean existeCuenta(String iban) {
         return buscarCuenta(iban) != null;

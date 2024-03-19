@@ -19,6 +19,7 @@ public class App {
         Banco banco = null;
         Scanner scanner = new Scanner(System.in);
         boolean salir = false;
+        String nombreBanco =null;
 
         while (!salir) {
             mostrarMenu();
@@ -29,7 +30,7 @@ public class App {
                 case 1:
                     if (banco == null) {
                         System.out.print("Ingrese el nombre del banco: ");
-                        String nombreBanco = scanner.nextLine();
+                        nombreBanco = scanner.nextLine();
                         banco = new Banco(nombreBanco);
                         System.out.println("Banco creado: " + banco.getNombre());
                     } else {
@@ -37,7 +38,7 @@ public class App {
                         String confirmacion = scanner.nextLine();
                         if (confirmacion.equalsIgnoreCase("S")) {
                             System.out.print("Ingrese el nombre del banco: ");
-                            String nombreBanco = scanner.nextLine();
+                            nombreBanco = scanner.nextLine();
                             banco = new Banco(nombreBanco);
                             System.out.println("Banco creado: " + banco.getNombre());
                         }
@@ -52,7 +53,7 @@ public class App {
                         String titular = scanner.nextLine();
                         System.out.print("Ingrese el saldo inicial de la cuenta: ");
                         double saldoInicial = scanner.nextDouble();
-                        scanner.nextLine(); // Limpiar el buffer de entrada
+                      
                         Cuenta cuenta = new Cuenta(iban, titular, saldoInicial);
                         if (banco.agregarCuenta(cuenta)) {
                             System.out.println("Cuenta agregada al banco.");
@@ -128,7 +129,7 @@ public class App {
 
                 case 6:
                     if (banco != null) {
-                        System.out.println("Informe del banco:");
+                        System.out.println("Informe del banco " +nombreBanco+" :");
                         System.out.println(banco.listadoCuentas());
                     } else {
                         System.out.println("Debe crear un banco primero.");
@@ -154,6 +155,7 @@ public class App {
                     break;
 
                 default:
+                    
                     System.out.println("Opción no válida. Por favor, seleccione una opción del menú.");
             }
         }

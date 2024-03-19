@@ -49,7 +49,7 @@ public class Cuenta {
     }
     
     public boolean retirar(double cantidad){
-        if(cantidad<saldo){
+        if(cantidad<=saldo){
             saldo-=cantidad;
             return true;
         }else
