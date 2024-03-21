@@ -12,7 +12,7 @@ package cuentabancariat6netbeans;
  */
 public class Banco {
     private String nombre;
-    private Cuenta[] cuentas;
+    private final Cuenta[] cuentas;
     private int numeroCuentas;
     private static final int MAX_CUENTAS = 100;
 
@@ -70,7 +70,6 @@ public class Banco {
   public boolean retirar(String iban, double importe) {
     Cuenta cuenta = buscarCuenta(iban);
     if (cuenta != null) {
-        // Permitir retirar cualquier cantidad, incluso si es más grande que el saldo actual
         if (importe >0) {
             return cuenta.retirar(importe);
         } else {
@@ -88,13 +87,15 @@ public class Banco {
         return buscarCuenta(iban) != null;
     }
 
-    public double informaSaldo(String iban) {
-        Cuenta cuenta = buscarCuenta(iban);
-        if (cuenta != null) {
-            return cuenta.getSaldo();
-        }
-        return -100000000; // Si la cuenta no existe
-    }
+   public double informaSaldo(String iban){
+    Cuenta cuenta = buscarCuenta(iban);
+    if (cuenta != null) {
+        return cuenta.getSaldo();
+    } 
+    
+        return -1;
+}
+
 
     public String listadoCuentas() {
         StringBuilder informe = new StringBuilder();
