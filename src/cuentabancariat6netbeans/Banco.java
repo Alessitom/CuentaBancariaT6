@@ -47,7 +47,7 @@ public class Banco {
         return null;
     }
 
-    public boolean borrarCuenta(String iban) {
+    public boolean borrarCuenta(String iban, String Documento) {
         int posicion = localizarCuenta(iban);
         if (posicion != -1) {
             cuentas[posicion] = cuentas[numeroCuentas - 1];
@@ -58,8 +58,8 @@ public class Banco {
         return false;
     }
 
-    public boolean ingresar(String iban, double importe) {
-        Cuenta cuenta = buscarCuenta(iban);
+    public boolean ingresar(String iban,String Documento, double importe) {
+        Cuenta cuenta = buscarCuenta(iban, Documento);
         if (cuenta != null) {
             cuenta.ingresar(importe);
             return true;
@@ -67,8 +67,8 @@ public class Banco {
         return false;
     }
 
-  public boolean retirar(String iban, double importe) {
-    Cuenta cuenta = buscarCuenta(iban);
+  public boolean retirar(String iban, String Documento, double importe) {
+    Cuenta cuenta = buscarCuenta(iban, Documento);
     if (cuenta != null) {
         if (importe >0) {
             return cuenta.retirar(importe);
@@ -83,12 +83,12 @@ public class Banco {
 
 
 
-    public boolean existeCuenta(String iban) {
-        return buscarCuenta(iban) != null;
+    public boolean existeCuenta(String iban, String Documento) {
+        return buscarCuenta(iban,Documento) != null;
     }
 
-   public double informaSaldo(String iban){
-    Cuenta cuenta = buscarCuenta(iban);
+   public double informaSaldo(String iban, String Documento){
+    Cuenta cuenta = buscarCuenta(iban, Documento);
     if (cuenta != null) {
         return cuenta.getSaldo();
     } 
@@ -134,9 +134,9 @@ public class Banco {
         return -1;
     }
 
-    private Cuenta buscarCuenta(String iban) {
+    private Cuenta buscarCuenta(String iban, String Documento) {
         for (int i = 0; i < numeroCuentas; i++) {
-            if (cuentas[i].getIBAN().equals(iban)) {
+            if (cuentas[i].getIBAN().equals(iban) || cuentas[i].getDocumento().equalsIgnoreCase(Documento)) {
                 return cuentas[i];
             }
         }
