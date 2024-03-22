@@ -58,8 +58,8 @@ public class Banco {
         return false;
     }
 
-    public boolean ingresar(String iban,String Documento, double importe) {
-        Cuenta cuenta = buscarCuenta(iban, Documento);
+    public boolean ingresar(String iban, double importe) {
+        Cuenta cuenta = buscarCuenta(iban);
         if (cuenta != null) {
             cuenta.ingresar(importe);
             return true;
@@ -67,15 +67,12 @@ public class Banco {
         return false;
     }
 
-  public boolean retirar(String iban, String Documento, double importe) {
-    Cuenta cuenta = buscarCuenta(iban, Documento);
+  public boolean retirar(String iban, double importe) {
+    Cuenta cuenta = buscarCuenta(iban);
     if (cuenta != null) {
-        if (importe >0) {
+      
             return cuenta.retirar(importe);
-        } else {
-            System.out.println("El importe a retirar debe ser igual o mayor que 0.");
-            return false;
-        }
+      
     }
     return false;
 }
@@ -83,12 +80,12 @@ public class Banco {
 
 
 
-    public boolean existeCuenta(String iban, String Documento) {
-        return buscarCuenta(iban,Documento) != null;
+    public boolean existeCuenta(String iban) {
+        return buscarCuenta(iban) != null;
     }
 
-   public double informaSaldo(String iban, String Documento){
-    Cuenta cuenta = buscarCuenta(iban, Documento);
+   public double informaSaldo(String iban){
+    Cuenta cuenta = buscarCuenta(iban);
     if (cuenta != null) {
         return cuenta.getSaldo();
     } 
@@ -134,9 +131,9 @@ public class Banco {
         return -1;
     }
 
-    private Cuenta buscarCuenta(String iban, String Documento) {
+    private Cuenta buscarCuenta(String iban) {
         for (int i = 0; i < numeroCuentas; i++) {
-            if (cuentas[i].getIBAN().equals(iban) || cuentas[i].getDocumento().equalsIgnoreCase(Documento)) {
+            if (cuentas[i].getIBAN().equals(iban)) {
                 return cuentas[i];
             }
         }

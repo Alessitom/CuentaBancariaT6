@@ -17,13 +17,11 @@ public class App {
      */
     public static void main(String[] args) throws DNIException {
         Banco banco = null;
-        
-        
+
         try (Scanner scanner = new Scanner(System.in)) {
             boolean salir = false;
             String nombreBanco = null;
             String Documento = null;
-
 
             while (!salir) {
                 mostrarMenu();
@@ -53,11 +51,21 @@ public class App {
                         if (banco != null) {
                             System.out.print("Ingrese el IBAN de la cuenta: ");
                             String iban = scanner.nextLine();
+                            boolean ibanValido = false;
+
+                            while (!ibanValido) {
+                                if (banco.existeCuenta(iban)) {
+                                    System.out.println("No puedes usar este IBAN, ya está en uso, porfavor pon uno válido:");
+                                    iban = scanner.nextLine();
+                                } else {
+                                    System.out.println("IBAN creado con exito");
+                                    ibanValido = true;
+                                }
+
+                            }
                             System.out.print("Ingrese el titular de la cuenta: ");
                             String titular = scanner.nextLine();
                             boolean documentoValido = false;
-
-                            
 
                             while (!documentoValido) {
                                 System.out.println("Ingrese tu DNI o tu NIE");
@@ -86,8 +94,6 @@ public class App {
                                 }
                             }
 
-
-
                             System.out.print("Ingrese el saldo inicial de la cuenta: ");
                             double saldoInicial = scanner.nextDouble();
 
@@ -108,10 +114,8 @@ public class App {
                             System.out.println(banco.listadoCuentas());
                             System.out.print("Ingrese el IBAN de la cuenta: ");
                             String ibanIngreso = scanner.nextLine();
-                            System.out.println("Confirmeme su DNI o NIE");
-                            String DocumentoIngreso = scanner.nextLine();
-                            
-                            double saldo = banco.informaSaldo(ibanIngreso, DocumentoIngreso);
+
+                            double saldo = banco.informaSaldo(ibanIngreso);
 
                             if (saldo != -1) {
                                 System.out.println("Saldo actual de la cuenta: " + saldo);
@@ -119,7 +123,7 @@ public class App {
                                 System.out.print("Ingrese la cantidad a ingresar: ");
                                 double cantidadIngreso = scanner.nextDouble();
                                 if (cantidadIngreso > 0) {
-                                    if (banco.ingresar(ibanIngreso, DocumentoIngreso, cantidadIngreso)) {
+                                    if (banco.ingresar(ibanIngreso, cantidadIngreso)) {
                                         System.out.println("Ingreso realizado con éxito.");
                                     } else {
                                         System.out.println("No se pudo realizar el ingreso. La cuenta no existe.");
@@ -141,10 +145,7 @@ public class App {
                             System.out.println(banco.listadoCuentas());
                             System.out.print("Ingrese el IBAN de la cuenta: ");
                             String ibanRetiro = scanner.nextLine();
-
-                            System.out.println("Confirmeme su DNI o NIE");
-                            String DocumentoRetiro = scanner.nextLine();
-                            double saldo = banco.informaSaldo(ibanRetiro, DocumentoRetiro);
+                            double saldo = banco.informaSaldo(ibanRetiro);
 
                             if (saldo != -1) {
                                 System.out.println("Saldo actual de la cuenta: " + saldo);
@@ -152,15 +153,10 @@ public class App {
                                 System.out.print("Ingrese la cantidad a retirar: ");
                                 double cantidadRetiro = scanner.nextDouble();
 
-                                if (cantidadRetiro > 0) {
-                                    if (banco.retirar(ibanRetiro, DocumentoRetiro, cantidadRetiro)) {
-                                        System.out.println("Retiro realizado con éxito.");
-                                    } else {
-                                        System.out.println("No se pudo realizar el retiro. La cuenta no tiene suficiente saldo.");
-                                    }
-                                } else {
-                                    System.out.println("La cantidad a retirar debe ser positiva.");
-                                }
+                                banco.retirar(ibanRetiro, cantidadRetiro); 
+                                System.out.println("Retiro realizado.");
+                               
+
                             } else {
                                 System.out.println("La cuenta con IBAN " + ibanRetiro + " no existe.");
                             }

@@ -51,11 +51,10 @@ public class Cuenta {
     }
     
     public boolean retirar(double cantidad){
-        if(cantidad<=saldo){
+       
             saldo-=cantidad;
             return true;
-        }else
-            return false;
+        
     }
       public static boolean validarNIF(String Documento) throws DNIException {
         String regex = "\\d{8}[a-zA-Z]";
