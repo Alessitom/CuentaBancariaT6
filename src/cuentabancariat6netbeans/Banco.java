@@ -4,22 +4,21 @@
  */
 package cuentabancariat6netbeans;
 
-
-
 /**
  *
  * @author Alex
  */
+import java.util.ArrayList;
+
 public class Banco {
+
     private String nombre;
-    private final Cuenta[] cuentas;
-    private int numeroCuentas;
+    private final ArrayList<Cuenta> cuentas;
     private static final int MAX_CUENTAS = 100;
 
     public Banco(String nombre) {
         this.nombre = nombre;
-        this.cuentas = new Cuenta [MAX_CUENTAS];
-        this.numeroCuentas = 0;
+        this.cuentas = new ArrayList<>();
     }
 
     public String getNombre() {
@@ -31,29 +30,28 @@ public class Banco {
     }
 
     public boolean agregarCuenta(Cuenta cuenta) {
-        if (numeroCuentas < MAX_CUENTAS) {
-            cuentas[numeroCuentas++] = cuenta;
+        if (cuentas.size() < MAX_CUENTAS) {
+            cuentas.add(cuenta);
             return true;
         }
         return false;
     }
 
     public String consultarCuenta(String iban) {
-        for (int i = 0; i < numeroCuentas; i++) {
-            if (cuentas[i].getIBAN().equals(iban)) {
-                return cuentas[i].toString();
+        for (Cuenta cuenta : cuentas) {
+            if (cuenta.getIBAN().equals(iban)) {
+                return cuenta.toString();
             }
         }
         return null;
     }
 
-    public boolean borrarCuenta(String iban, String Documento) {
-        int posicion = localizarCuenta(iban);
-        if (posicion != -1) {
-            cuentas[posicion] = cuentas[numeroCuentas - 1];
-            cuentas[numeroCuentas - 1] = null;
-            numeroCuentas--;
-            return true;
+    public boolean borrarCuenta(String iban) {
+        for (int i = 0; i < cuentas.size(); i++) {
+            if (cuentas.get(i).getIBAN().equals(iban)) {
+                cuentas.remove(i);
+                return true;
+            }
         }
         return false;
     }
@@ -67,32 +65,24 @@ public class Banco {
         return false;
     }
 
-  public boolean retirar(String iban, double importe) {
-    Cuenta cuenta = buscarCuenta(iban);
-    if (cuenta != null) {
-      
-            return cuenta.retirar(importe);
-      
+    public void retirar(String iban, double importe) {
+        Cuenta cuenta = buscarCuenta(iban);
+        if (cuenta != null) {
+            cuenta.retirar(importe);
+        }
     }
-    return false;
-}
-
-
-
 
     public boolean existeCuenta(String iban) {
         return buscarCuenta(iban) != null;
     }
 
-   public double informaSaldo(String iban){
-    Cuenta cuenta = buscarCuenta(iban);
-    if (cuenta != null) {
-        return cuenta.getSaldo();
-    } 
-    
+    public double informaSaldo(String iban) {
+        Cuenta cuenta = buscarCuenta(iban);
+        if (cuenta != null) {
+            return cuenta.getSaldo();
+        }
         return -1;
-}
-
+    }
 
     public String listadoCuentas() {
         StringBuilder informe = new StringBuilder();
@@ -100,10 +90,10 @@ public class Banco {
         int cuentasPositivas = 0;
         int cuentasNegativas = 0;
 
-        for (int i = 0; i < numeroCuentas; i++) {
-            informe.append(cuentas[i].toString()).append("\n");
-            saldoTotal += cuentas[i].getSaldo();
-            if (cuentas[i].getSaldo() > 0) {
+        for (Cuenta cuenta : cuentas) {
+            informe.append(cuenta.toString()).append("\n");
+            saldoTotal += cuenta.getSaldo();
+            if (cuenta.getSaldo() > 0) {
                 cuentasPositivas++;
             } else {
                 cuentasNegativas++;
@@ -113,30 +103,40 @@ public class Banco {
         informe.append("Saldo total: ").append(saldoTotal).append("\n");
         informe.append("Número de cuentas con saldo positivo: ").append(cuentasPositivas).append("\n");
         informe.append("Número de cuentas con saldo negativo: ").append(cuentasNegativas).append("\n");
-        if (numeroCuentas > 0) {
-            informe.append("Porcentaje de saldo positivo respecto al total: ").append(((double) cuentasPositivas / numeroCuentas) * 100).append("%\n");
-            informe.append("Porcentaje de saldo negativo respecto al total: ").append(((double) cuentasNegativas / numeroCuentas) * 100).append("%\n");
-            informe.append("Saldo medio por cuenta: ").append(saldoTotal / numeroCuentas).append("\n");
+        if (!cuentas.isEmpty()) {
+            informe.append("Porcentaje de saldo positivo respecto al total: ").append(((double) cuentasPositivas / cuentas.size()) * 100).append("%\n");
+            informe.append("Porcentaje de saldo negativo respecto al total: ").append(((double) cuentasNegativas / cuentas.size()) * 100).append("%\n");
+            informe.append("Saldo medio por cuenta: ").append(saldoTotal / cuentas.size()).append("\n");
         }
 
         return informe.toString();
     }
 
-    private int localizarCuenta(String iban) {
-        for (int i = 0; i < numeroCuentas; i++) {
-            if (cuentas[i].getIBAN().equals(iban)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     private Cuenta buscarCuenta(String iban) {
-        for (int i = 0; i < numeroCuentas; i++) {
-            if (cuentas[i].getIBAN().equals(iban)) {
-                return cuentas[i];
+        for (Cuenta cuenta : cuentas) {
+            if (cuenta.getIBAN().equals(iban)) {
+                return cuenta;
             }
         }
         return null;
     }
+    
+   public void rellenarCuentas() {
+    if (cuentas.size() >= MAX_CUENTAS) {
+        System.out.println("No se pueden añadir más cuentas");
+    } else {
+        int cuentasRestantes = MAX_CUENTAS - cuentas.size();
+        int contador = 1; // Inicializamos el contador fuera del bucle
+
+        for (int i = 0; i < cuentasRestantes; i++) {
+            String iban = "c"+ String.format("%02d",contador); // Convertimos el contador a String
+            Cuenta cuentavacia = new Cuenta(iban, "*** ", 0, "*** ");
+            cuentas.add(cuentavacia);
+
+            contador++; // Incrementamos el contador para la siguiente cuenta
+        }
+
+        System.out.println("Se han añadido " + cuentasRestantes + " cuentas nuevas");
+    }
+}
 }

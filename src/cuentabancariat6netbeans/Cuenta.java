@@ -50,10 +50,10 @@ public class Cuenta {
         saldo+=cantidad;
     }
     
-    public boolean retirar(double cantidad){
+    public void retirar(double cantidad){
        
             saldo-=cantidad;
-            return true;
+           
         
     }
       public static boolean validarNIF(String Documento) throws DNIException {

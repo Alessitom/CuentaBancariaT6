@@ -153,9 +153,8 @@ public class App {
                                 System.out.print("Ingrese la cantidad a retirar: ");
                                 double cantidadRetiro = scanner.nextDouble();
 
-                                banco.retirar(ibanRetiro, cantidadRetiro); 
+                                banco.retirar(ibanRetiro, cantidadRetiro);
                                 System.out.println("Retiro realizado.");
-                               
 
                             } else {
                                 System.out.println("La cuenta con IBAN " + ibanRetiro + " no existe.");
@@ -195,9 +194,8 @@ public class App {
                         if (banco != null) {
                             System.out.print("Ingrese el IBAN de la cuenta a borrar: ");
                             String ibanBorrar = scanner.nextLine();
-                            System.out.println("Confirmeme su DNI o NIE:");
-                            String DocumentoBorrar = scanner.nextLine();
-                            if (banco.borrarCuenta(ibanBorrar, DocumentoBorrar)) {
+
+                            if (banco.borrarCuenta(ibanBorrar)) {
                                 System.out.println("Cuenta borrada con éxito.");
                             } else {
                                 System.out.println("No se pudo borrar la cuenta. La cuenta no existe.");
@@ -208,10 +206,20 @@ public class App {
                         break;
 
                     case 8:
+                        if (banco != null) {
+                            System.out.println("Rellenando banco...");
+                            banco.rellenarCuentas();
+                        } else {
+                            System.out.println("Debe crear un banco primero.");
+                        }
+
+                        break;
+
+                    case 9:
+
                         System.out.println("Saliendo del programa...");
                         salir = true;
                         break;
-
                     default:
 
                         System.out.println("Opción no válida. Por favor, seleccione una opción del menú.");
@@ -221,7 +229,8 @@ public class App {
     }
 
     public static void mostrarMenu() {
-        System.out.println("\nMenú:");
+        System.out.println("*******************************");
+        System.out.println("Menú:");
         System.out.println("1. Crear banco");
         System.out.println("2. Agregar cuenta");
         System.out.println("3. Ingresar en cuenta");
@@ -229,7 +238,10 @@ public class App {
         System.out.println("5. Ver datos de cuenta");
         System.out.println("6. Ver informe del banco");
         System.out.println("7. Borrar cuenta");
-        System.out.println("8. Salir");
+        System.out.println("8.Rellenar banco con cuentas vacias");
+        System.out.println("9. Salir");
+
+        System.out.println("*******************************");
         System.out.print("Seleccione una opción: ");
     }
 
