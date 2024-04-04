@@ -4,12 +4,15 @@
  */
 package cuentabancariat6netbeans;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Alex
  */
-public class Cuenta {
+public class Cuenta implements Serializable{
     
+    private static final long serialVersion = 1L;
     private String IBAN;
     private String Titular;
     private double saldo;

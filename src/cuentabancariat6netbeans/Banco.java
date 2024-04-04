@@ -8,17 +8,23 @@ package cuentabancariat6netbeans;
  *
  * @author Alex
  */
-import java.util.ArrayList;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.LinkedList;
 
-public class Banco {
+public class Banco implements Serializable {
 
+    private static final long serialVersion = 1L;
     private String nombre;
-    private final ArrayList<Cuenta> cuentas;
-    private static final int MAX_CUENTAS = 100;
+    private final LinkedList<Cuenta> cuentas;
 
     public Banco(String nombre) {
         this.nombre = nombre;
-        this.cuentas = new ArrayList<>();
+        this.cuentas = new LinkedList<>();
     }
 
     public String getNombre() {
@@ -30,11 +36,7 @@ public class Banco {
     }
 
     public boolean agregarCuenta(Cuenta cuenta) {
-        if (cuentas.size() < MAX_CUENTAS) {
-            cuentas.add(cuenta);
-            return true;
-        }
-        return false;
+        return cuentas.add(cuenta);
     }
 
     public String consultarCuenta(String iban) {
@@ -47,10 +49,9 @@ public class Banco {
     }
 
     public boolean borrarCuenta(String iban) {
-        for (int i = 0; i < cuentas.size(); i++) {
-            if (cuentas.get(i).getIBAN().equals(iban)) {
-                cuentas.remove(i);
-                return true;
+        for (Cuenta cuenta : cuentas) {
+            if (cuenta.getIBAN().equals(iban)) {
+                return cuentas.remove(cuenta);
             }
         }
         return false;
@@ -85,31 +86,21 @@ public class Banco {
     }
 
     public String listadoCuentas() {
-        StringBuilder informe = new StringBuilder();
-        double saldoTotal = 0;
-        int cuentasPositivas = 0;
-        int cuentasNegativas = 0;
+        double totalSaldo = 0;
+        StringBuilder salida = new StringBuilder();
+        salida.append("      cuenta                  Titular             DNI           Saldo\n");
+        salida.append("====================   ====================    ===========   =============\n");
 
         for (Cuenta cuenta : cuentas) {
-            informe.append(cuenta.toString()).append("\n");
-            saldoTotal += cuenta.getSaldo();
-            if (cuenta.getSaldo() > 0) {
-                cuentasPositivas++;
-            } else {
-                cuentasNegativas++;
-            }
+            salida.append(String.format("%15s %20s %20s %15.2f\n",
+                    cuenta.getIBAN(), cuenta.getTitular(), cuenta.getDocumento(), cuenta.getSaldo()));
+            totalSaldo += cuenta.getSaldo();
         }
+        salida.append("\n");
+        salida.append(String.format("Número total de cuentas: %3d                     %8.2f \n",
+                cuentas.size(), totalSaldo));
 
-        informe.append("Saldo total: ").append(saldoTotal).append("\n");
-        informe.append("Número de cuentas con saldo positivo: ").append(cuentasPositivas).append("\n");
-        informe.append("Número de cuentas con saldo negativo: ").append(cuentasNegativas).append("\n");
-        if (!cuentas.isEmpty()) {
-            informe.append("Porcentaje de saldo positivo respecto al total: ").append(((double) cuentasPositivas / cuentas.size()) * 100).append("%\n");
-            informe.append("Porcentaje de saldo negativo respecto al total: ").append(((double) cuentasNegativas / cuentas.size()) * 100).append("%\n");
-            informe.append("Saldo medio por cuenta: ").append(saldoTotal / cuentas.size()).append("\n");
-        }
-
-        return informe.toString();
+        return salida.toString();
     }
 
     private Cuenta buscarCuenta(String iban) {
@@ -120,23 +111,42 @@ public class Banco {
         }
         return null;
     }
-    
-   public void rellenarCuentas() {
-    if (cuentas.size() >= MAX_CUENTAS) {
-        System.out.println("No se pueden añadir más cuentas");
-    } else {
-        int cuentasRestantes = MAX_CUENTAS - cuentas.size();
-        int contador = 1; // Inicializamos el contador fuera del bucle
 
-        for (int i = 0; i < cuentasRestantes; i++) {
-            String iban = "c"+ String.format("%02d",contador); // Convertimos el contador a String
-            Cuenta cuentavacia = new Cuenta(iban, "*** ", 0, "*** ");
-            cuentas.add(cuentavacia);
-
-            contador++; // Incrementamos el contador para la siguiente cuenta
+    public void rellenarCuentas() {
+        String IBAN, titular, dni;
+        for (int i = 0; i < 100; i++) {
+            IBAN = String.format("Cuenta%3d", i);
+            titular = String.format("Titular %3d", i);
+            dni = String.format("%08dA", i);
+            double saldo = Math.random() * 10000;
+            Cuenta cuenta = new Cuenta(IBAN, titular, saldo, dni);
+            this.agregarCuenta(cuenta);
         }
+    }
 
-        System.out.println("Se han añadido " + cuentasRestantes + " cuentas nuevas");
+    // Método para serializar el curso
+    public void guardarEstado(String nombreArchivo) throws IOException {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(nombreArchivo))) {
+            out.writeObject(this);
+            //System.out.println("Curso serializado correctamente.");
+        }
+         catch (IOException e) {
+            throw new IOException("Se ha producido un error al leer el archivo:" + nombreArchivo);
+        }
+    }
+
+    // Método para deserializar el curso
+    public static Banco cargarEstado(String nombreArchivo) throws IOException, ClassNotFoundException {
+        Banco banco;
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(nombreArchivo))) {
+            banco = (Banco) in.readObject();
+            //System.out.println("Curso deserializado correctamente.");
+        } catch (IOException e) {
+            throw new IOException("Se ha producido un error al leer el archivo:" + nombreArchivo);
+        } catch (ClassNotFoundException e) {
+            throw new ClassNotFoundException("Se ha producido un error al abir el archivo:" + nombreArchivo);
+        }
+        return banco;
     }
 }
-}
+

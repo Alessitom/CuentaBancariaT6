@@ -4,6 +4,8 @@
  */
 package cuentabancariat6netbeans;
 
+import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -12,8 +14,11 @@ import java.util.Scanner;
  */
 public class App {
 
+    private static final String PATHNAME = "./archivos/";
+
     /**
      * @param args the command line arguments
+     * @throws cuentabancariat6netbeans.DNIException
      */
     public static void main(String[] args) throws DNIException {
         Banco banco = null;
@@ -207,7 +212,7 @@ public class App {
 
                     case 8:
                         if (banco != null) {
-                            System.out.println("Rellenando banco...");
+                            System.out.println("Banco rellenado correctamente.");
                             banco.rellenarCuentas();
                         } else {
                             System.out.println("Debe crear un banco primero.");
@@ -216,6 +221,31 @@ public class App {
                         break;
 
                     case 9:
+                        if (banco == null) {
+                            System.out.println("BANCO NO CREADO");
+                            break;
+                        }
+                        guardarDatos(banco, banco.getNombre() + ".dat");
+                        break;
+
+                    case 10:
+                        if (banco != null) {
+                            System.out.println("Ya hay datos creados del banco " + banco.getNombre() + ". Si continúa se perderán. ¿Desea continuar?");
+                            String respuesta;
+                            do {
+                                System.out.println("Introduzca S o N:");
+                                respuesta = scanner.nextLine();
+                            } while (!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n"));
+
+                            if (respuesta.equalsIgnoreCase("s")) {
+                                banco = recuperarDatos(banco.getNombre() + ".dat");
+                            }
+                        } else {
+                            System.out.println("No hay banco creado para cargar datos.");
+                        }
+                        break;
+
+                    case 11:
 
                         System.out.println("Saliendo del programa...");
                         salir = true;
@@ -225,12 +255,15 @@ public class App {
                         System.out.println("Opción no válida. Por favor, seleccione una opción del menú.");
                 }
             }
+        }catch(InputMismatchException e){
+            System.out.println("Porfavor introduzca un número");
+            
         }
     }
 
     public static void mostrarMenu() {
         System.out.println("*******************************");
-        System.out.println("Menú:");
+        System.out.println("Menu:");
         System.out.println("1. Crear banco");
         System.out.println("2. Agregar cuenta");
         System.out.println("3. Ingresar en cuenta");
@@ -239,10 +272,33 @@ public class App {
         System.out.println("6. Ver informe del banco");
         System.out.println("7. Borrar cuenta");
         System.out.println("8.Rellenar banco con cuentas vacias");
-        System.out.println("9. Salir");
-
+        System.out.println("9. Guardar Datos");
+        System.out.println("10. Cargar Datos.");
+        System.out.println("11. Salir");
         System.out.println("*******************************");
-        System.out.print("Seleccione una opción: ");
+        System.out.print("Seleccione una opcion: ");
     }
+
+    public static void guardarDatos(Banco banco, String archivo) {
+        try {
+            banco.guardarEstado(PATHNAME + archivo);
+            System.out.println("Curso guardado en " + PATHNAME + archivo);
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public static Banco recuperarDatos(String archivo) {
+        try {
+            Banco bancoRecuperado = Banco.cargarEstado(PATHNAME + archivo);
+            System.out.println("Curso recuperado de " + PATHNAME + archivo);
+            return bancoRecuperado;
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
+            return null;
+        }
+    }
+
+  
 
 }
