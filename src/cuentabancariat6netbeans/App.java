@@ -5,7 +5,10 @@
 package cuentabancariat6netbeans;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -221,6 +224,40 @@ public class App {
                         break;
 
                     case 9:
+                        if (banco != null) {
+                            List<Cuenta> cuentas = banco.getCuentas();
+                            System.out.println("Ordenando cuentas por saldo ascendente...");
+                            Collections.sort(cuentas);
+                            System.out.println("Cuentas ordenadas correctamente.");
+                        } else {
+                            System.out.println("Debe crear un banco primero.");
+                        }
+                        break;
+
+                    case 10:
+                        if (banco != null) {
+                            List<Cuenta> cuentasSaldoDescendente = banco.getCuentas();
+                            System.out.println("Ordenando cuentas por saldo descendente...");
+                            Collections.sort(cuentasSaldoDescendente, Collections.reverseOrder()); // Ordenar por saldo descendente
+                            System.out.println("Cuentas ordenadas correctamente.");
+                        } else {
+                            System.out.println("Debe crear un banco primero.");
+                        }
+                        break;
+
+                    case 11:
+                        if (banco != null) {
+                            List<Cuenta> cuentasIBANDescendente = banco.getCuentas();
+                            System.out.println("Ordenando cuentas por IBAN descendente...");
+                             Collections.sort(cuentasIBANDescendente, (cuenta1,cuenta2)-> cuenta2.getIBAN().compareTo(cuenta1.getIBAN()));// Ordenar por IBAN descendente
+                            System.out.println("Cuentas ordenadas correctamente.");
+
+                        } else {
+                            System.out.println("Debe crear un banco primero.");
+                        }
+                        break;
+
+                    case 12:
                         if (banco == null) {
                             System.out.println("BANCO NO CREADO");
                             break;
@@ -228,7 +265,7 @@ public class App {
                         guardarDatos(banco, banco.getNombre() + ".dat");
                         break;
 
-                    case 10:
+                    case 13:
                         if (banco != null) {
                             System.out.println("Ya hay datos creados del banco " + banco.getNombre() + ". Si continúa se perderán. ¿Desea continuar?");
                             String respuesta;
@@ -245,19 +282,20 @@ public class App {
                         }
                         break;
 
-                    case 11:
+                    case 14:
 
                         System.out.println("Saliendo del programa...");
                         salir = true;
                         break;
+
                     default:
 
                         System.out.println("Opción no válida. Por favor, seleccione una opción del menú.");
                 }
             }
-        }catch(InputMismatchException e){
+        } catch (InputMismatchException e) {
             System.out.println("Porfavor introduzca un número");
-            
+
         }
     }
 
@@ -271,10 +309,13 @@ public class App {
         System.out.println("5. Ver datos de cuenta");
         System.out.println("6. Ver informe del banco");
         System.out.println("7. Borrar cuenta");
-        System.out.println("8.Rellenar banco con cuentas vacias");
-        System.out.println("9. Guardar Datos");
-        System.out.println("10. Cargar Datos.");
-        System.out.println("11. Salir");
+        System.out.println("8.Rellenar banco con cuentas");
+        System.out.println("9.Ordenar cuentas(Descendente por saldo)");
+        System.out.println("10.Ordenar cuentas(Ascendente por saldo)");
+        System.out.println("11. Ordenar cuentas(Descendente por IBAN)");
+        System.out.println("12. Guardar Datos");
+        System.out.println("13. Cargar Datos.");
+        System.out.println("14. Salir");
         System.out.println("*******************************");
         System.out.print("Seleccione una opcion: ");
     }
@@ -298,7 +339,5 @@ public class App {
             return null;
         }
     }
-
-  
 
 }

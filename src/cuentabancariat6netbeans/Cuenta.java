@@ -1,4 +1,4 @@
-    /*
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
@@ -10,8 +10,8 @@ import java.io.Serializable;
  *
  * @author Alex
  */
-public class Cuenta implements Serializable{
-    
+public class Cuenta implements Serializable, Comparable<Cuenta> {
+
     private static final long serialVersion = 1L;
     private String IBAN;
     private String Titular;
@@ -48,28 +48,28 @@ public class Cuenta implements Serializable{
     public void setSaldo(double saldo) {
         this.saldo = saldo;
     }
-    
-    public void ingresar(double cantidad){
-        saldo+=cantidad;
+
+    public void ingresar(double cantidad) {
+        saldo += cantidad;
     }
-    
-    public void retirar(double cantidad){
-       
-            saldo-=cantidad;
-           
-        
+
+    public void retirar(double cantidad) {
+
+        saldo -= cantidad;
+
     }
-      public static boolean validarNIF(String Documento) throws DNIException {
+
+    public static boolean validarNIF(String Documento) throws DNIException {
         String regex = "\\d{8}[a-zA-Z]";
         if (!Documento.matches(regex)) {
             throw new DNIException("El NIF no tiene el formato correcto.");
         }
 
         int miNIF = Integer.parseInt(Documento.substring(0, 8));
-           char letra = Character.toUpperCase(Documento.charAt(8));
+        char letra = Character.toUpperCase(Documento.charAt(8));
 
         char[] asignacionLetra = {'T', 'R', 'W', 'A', 'G', 'M', 'Y', 'F', 'P', 'D', 'X', 'B', 'N', 'J', 'Z', 'S', 'Q', 'V', 'H', 'L', 'C', 'K', 'E'};
-       
+
         int resto = miNIF % 23;
 
         if (letra != asignacionLetra[resto]) {
@@ -114,18 +114,34 @@ public class Cuenta implements Serializable{
     public void setDocumento(String Documento) {
         this.Documento = Documento;
     }
-    
 
     @Override
     public String toString() {
         return "Cuenta{" + "IBAN=" + IBAN + ", Titular=" + Titular + ", saldo=" + saldo + ", Documento=" + Documento + '}';
     }
 
+    @Override
+    public int compareTo(Cuenta o) {
+        if (this.saldo > o.saldo) {
+            return 1;
 
+        } else if (this.saldo < o.saldo) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 
+    /*
+    @Override
+    public int compareTo(Cuenta o) {
+    return Double.compare(this.saldo, o.saldo);
+    }
 
+     */
 
-      
-    
-    
+    public int compareToPorIBAN(Cuenta otraCuenta) {
+        return otraCuenta.IBAN.compareTo(this.IBAN);
+    }
+
 }

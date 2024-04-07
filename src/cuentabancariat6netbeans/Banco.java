@@ -16,7 +16,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Banco implements Serializable {
+public class Banco implements Serializable{
 
     private static final long serialVersion = 1L;
     private String nombre;
@@ -148,5 +148,12 @@ public class Banco implements Serializable {
         }
         return banco;
     }
+
+    public LinkedList<Cuenta> getCuentas() {
+        return cuentas;
+    }
+    
+
+    
 }
 
