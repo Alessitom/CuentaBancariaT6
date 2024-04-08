@@ -5,6 +5,7 @@
 package cuentabancariat6netbeans;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  *
@@ -24,6 +25,7 @@ public class Cuenta implements Serializable, Comparable<Cuenta> {
         this.saldo = saldo;
         this.Documento = Documento;
     }
+    
 
     public String getIBAN() {
         return IBAN;
@@ -119,7 +121,7 @@ public class Cuenta implements Serializable, Comparable<Cuenta> {
     public String toString() {
         return "Cuenta{" + "IBAN=" + IBAN + ", Titular=" + Titular + ", saldo=" + saldo + ", Documento=" + Documento + '}';
     }
-
+ /*
     @Override
     public int compareTo(Cuenta o) {
         if (this.saldo > o.saldo) {
@@ -131,17 +133,39 @@ public class Cuenta implements Serializable, Comparable<Cuenta> {
             return 0;
         }
     }
-
-    /*
+    */
+   
     @Override
     public int compareTo(Cuenta o) {
     return Double.compare(this.saldo, o.saldo);
     }
 
-     */
+ 
 
     public int compareToPorIBAN(Cuenta otraCuenta) {
         return otraCuenta.IBAN.compareTo(this.IBAN);
+    }
+
+    @Override
+    public int hashCode() {
+        
+         return Objects.hashCode(this.IBAN);
+        
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Cuenta other = (Cuenta) obj;
+        return Objects.equals(this.IBAN, other.IBAN);
     }
 
 }

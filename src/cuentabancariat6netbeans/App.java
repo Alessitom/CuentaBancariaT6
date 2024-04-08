@@ -59,18 +59,7 @@ public class App {
                         if (banco != null) {
                             System.out.print("Ingrese el IBAN de la cuenta: ");
                             String iban = scanner.nextLine();
-                            boolean ibanValido = false;
 
-                            while (!ibanValido) {
-                                if (banco.existeCuenta(iban)) {
-                                    System.out.println("No puedes usar este IBAN, ya está en uso, porfavor pon uno válido:");
-                                    iban = scanner.nextLine();
-                                } else {
-                                    System.out.println("IBAN creado con exito");
-                                    ibanValido = true;
-                                }
-
-                            }
                             System.out.print("Ingrese el titular de la cuenta: ");
                             String titular = scanner.nextLine();
                             boolean documentoValido = false;
@@ -109,7 +98,7 @@ public class App {
                             if (banco.agregarCuenta(cuenta)) {
                                 System.out.println("Cuenta agregada al banco.");
                             } else {
-                                System.out.println("No se pudo agregar la cuenta. El banco está lleno.");
+                                System.out.println("No se pudo agregar la cuenta.");
                             }
                         } else {
                             System.out.println("Debe crear un banco primero.");
@@ -225,9 +214,8 @@ public class App {
 
                     case 9:
                         if (banco != null) {
-                            List<Cuenta> cuentas = banco.getCuentas();
                             System.out.println("Ordenando cuentas por saldo ascendente...");
-                            Collections.sort(cuentas);
+                            banco.ordenarCuentasPorSaldoAscendente();
                             System.out.println("Cuentas ordenadas correctamente.");
                         } else {
                             System.out.println("Debe crear un banco primero.");
@@ -236,9 +224,8 @@ public class App {
 
                     case 10:
                         if (banco != null) {
-                            List<Cuenta> cuentasSaldoDescendente = banco.getCuentas();
                             System.out.println("Ordenando cuentas por saldo descendente...");
-                            Collections.sort(cuentasSaldoDescendente, Collections.reverseOrder()); // Ordenar por saldo descendente
+                            banco.ordenarCuentasPorSaldoDescendente();
                             System.out.println("Cuentas ordenadas correctamente.");
                         } else {
                             System.out.println("Debe crear un banco primero.");
@@ -247,9 +234,9 @@ public class App {
 
                     case 11:
                         if (banco != null) {
-                            List<Cuenta> cuentasIBANDescendente = banco.getCuentas();
+
                             System.out.println("Ordenando cuentas por IBAN descendente...");
-                             Collections.sort(cuentasIBANDescendente, (cuenta1,cuenta2)-> cuenta2.getIBAN().compareTo(cuenta1.getIBAN()));// Ordenar por IBAN descendente
+                            banco.ordenarCuentasPorIBANDescendente();
                             System.out.println("Cuentas ordenadas correctamente.");
 
                         } else {
@@ -258,6 +245,18 @@ public class App {
                         break;
 
                     case 12:
+                        if (banco != null) {
+
+                            System.out.println("Ordenando cuentas por IBAN Ascendente...");
+                            banco.ordenarCuentasPorIBANAscendente();
+                            System.out.println("Cuentas ordenadas correctamente.");
+
+                        } else {
+                            System.out.println("Debe crear un banco primero.");
+                        }
+                        break;
+
+                    case 13:
                         if (banco == null) {
                             System.out.println("BANCO NO CREADO");
                             break;
@@ -265,7 +264,7 @@ public class App {
                         guardarDatos(banco, banco.getNombre() + ".dat");
                         break;
 
-                    case 13:
+                    case 14:
                         if (banco != null) {
                             System.out.println("Ya hay datos creados del banco " + banco.getNombre() + ". Si continúa se perderán. ¿Desea continuar?");
                             String respuesta;
@@ -282,7 +281,7 @@ public class App {
                         }
                         break;
 
-                    case 14:
+                    case 15:
 
                         System.out.println("Saliendo del programa...");
                         salir = true;
@@ -313,9 +312,10 @@ public class App {
         System.out.println("9.Ordenar cuentas(Descendente por saldo)");
         System.out.println("10.Ordenar cuentas(Ascendente por saldo)");
         System.out.println("11. Ordenar cuentas(Descendente por IBAN)");
-        System.out.println("12. Guardar Datos");
-        System.out.println("13. Cargar Datos.");
-        System.out.println("14. Salir");
+        System.out.println("12. Ordenar cuentas(Ascendente por IBAN)");
+        System.out.println("13. Guardar Datos");
+        System.out.println("14. Cargar Datos.");
+        System.out.println("15. Salir");
         System.out.println("*******************************");
         System.out.print("Seleccione una opcion: ");
     }

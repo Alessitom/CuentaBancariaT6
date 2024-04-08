@@ -14,17 +14,24 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
-public class Banco implements Serializable{
+public class Banco implements Serializable {
 
     private static final long serialVersion = 1L;
     private String nombre;
-    private final LinkedList<Cuenta> cuentas;
+    private final Set<Cuenta> cuentas;
 
     public Banco(String nombre) {
         this.nombre = nombre;
-        this.cuentas = new LinkedList<>();
+        this.cuentas = new LinkedHashSet<Cuenta>();
     }
 
     public String getNombre() {
@@ -49,9 +56,12 @@ public class Banco implements Serializable{
     }
 
     public boolean borrarCuenta(String iban) {
-        for (Cuenta cuenta : cuentas) {
-            if (cuenta.getIBAN().equals(iban)) {
-                return cuentas.remove(cuenta);
+        Iterator<Cuenta> iteCuentas = cuentas.iterator();
+        while (iteCuentas.hasNext()) {
+            Cuenta c = iteCuentas.next();
+            if (c.getIBAN().equals(iban)) {
+                iteCuentas.remove();
+                return true;
             }
         }
         return false;
@@ -114,7 +124,7 @@ public class Banco implements Serializable{
 
     public void rellenarCuentas() {
         String IBAN, titular, dni;
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 200; i++) {
             IBAN = String.format("Cuenta%3d", i);
             titular = String.format("Titular %3d", i);
             dni = String.format("%08dA", i);
@@ -129,8 +139,7 @@ public class Banco implements Serializable{
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(nombreArchivo))) {
             out.writeObject(this);
             //System.out.println("Curso serializado correctamente.");
-        }
-         catch (IOException e) {
+        } catch (IOException e) {
             throw new IOException("Se ha producido un error al leer el archivo:" + nombreArchivo);
         }
     }
@@ -149,11 +158,32 @@ public class Banco implements Serializable{
         return banco;
     }
 
-    public LinkedList<Cuenta> getCuentas() {
+    public Set<Cuenta> getCuentas() {
         return cuentas;
     }
-    
 
-    
+    public List<Cuenta> ordenarCuentasPorSaldoAscendente() {
+        List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas);
+        listaCuentas.sort(Comparator.comparingDouble(Cuenta::getSaldo));
+        return listaCuentas;
+    }
+
+    public List<Cuenta> ordenarCuentasPorSaldoDescendente() {
+        List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas);
+        listaCuentas.sort(Comparator.comparingDouble(Cuenta::getSaldo).reversed());
+        return listaCuentas;
+    }
+
+    public List<Cuenta> ordenarCuentasPorIBANAscendente() {
+        List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas);
+        listaCuentas.sort(Comparator.comparing(Cuenta::getIBAN));
+        return listaCuentas;
+    }
+
+    public List<Cuenta> ordenarCuentasPorIBANDescendente() {
+        List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas);
+        listaCuentas.sort((c1, c2) -> c2.getIBAN().compareTo(c1.getIBAN()));
+        return listaCuentas;
+    }
+
 }
-
