@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class Banco implements Serializable {
 
     public Banco(String nombre) {
         this.nombre = nombre;
-        this.cuentas = new HashMap<>();
+        this.cuentas = new LinkedHashMap<>();
     }
 
     public String getNombre() {
@@ -150,27 +151,40 @@ public class Banco implements Serializable {
         return banco;
     }
 
-    public List<Cuenta> ordenarCuentasPorSaldoAscendente() {
+    public void ordenarCuentasPorSaldoAscendente() {
         List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas.values());
         listaCuentas.sort(Comparator.comparingDouble(Cuenta::getSaldo));
-        return listaCuentas;
+        this.cuentas.clear();
+        for (Cuenta cuenta : listaCuentas) {
+            this.cuentas.put(cuenta.getIBAN(), cuenta);
+        }
     }
 
-    public List<Cuenta> ordenarCuentasPorSaldoDescendente() {
+    public void ordenarCuentasPorSaldoDescendente() {
         List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas.values());
         listaCuentas.sort(Comparator.comparingDouble(Cuenta::getSaldo).reversed());
-        return listaCuentas;
+        this.cuentas.clear();
+        for (Cuenta cuenta : listaCuentas) {
+            this.cuentas.put(cuenta.getIBAN(), cuenta);
+        }
     }
 
-    public List<Cuenta> ordenarCuentasPorIBANAscendente() {
+    public void ordenarCuentasPorIBANAscendente() {
         List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas.values());
         listaCuentas.sort(Comparator.comparing(Cuenta::getIBAN));
-        return listaCuentas;
+        this.cuentas.clear();
+        for (Cuenta cuenta : listaCuentas) {
+            this.cuentas.put(cuenta.getIBAN(), cuenta);
+        }
     }
 
-    public List<Cuenta> ordenarCuentasPorIBANDescendente() {
+    public void ordenarCuentasPorIBANDescendente() {
         List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas.values());
         listaCuentas.sort((c1, c2) -> c2.getIBAN().compareTo(c1.getIBAN()));
-        return listaCuentas;
+        this.cuentas.clear();
+        for (Cuenta cuenta : listaCuentas) {
+            this.cuentas.put(cuenta.getIBAN(), cuenta);
+        }
     }
+
 }
