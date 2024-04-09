@@ -59,7 +59,18 @@ public class App {
                         if (banco != null) {
                             System.out.print("Ingrese el IBAN de la cuenta: ");
                             String iban = scanner.nextLine();
+                            boolean ibanValido = false;
 
+                            while (!ibanValido) {
+                                if (banco.existeCuenta(iban)) {
+                                    System.out.println("No puedes usar este IBAN, ya está en uso, porfavor pon uno válido:");
+                                    iban = scanner.nextLine();
+                                } else {
+                                    System.out.println("IBAN creado con exito");
+                                    ibanValido = true;
+                                }
+
+                            }
                             System.out.print("Ingrese el titular de la cuenta: ");
                             String titular = scanner.nextLine();
                             boolean documentoValido = false;
@@ -300,7 +311,7 @@ public class App {
 
     public static void mostrarMenu() {
         System.out.println("*******************************");
-        System.out.println("Menu:");
+        System.out.println("Menú:");
         System.out.println("1. Crear banco");
         System.out.println("2. Agregar cuenta");
         System.out.println("3. Ingresar en cuenta");
@@ -308,16 +319,16 @@ public class App {
         System.out.println("5. Ver datos de cuenta");
         System.out.println("6. Ver informe del banco");
         System.out.println("7. Borrar cuenta");
-        System.out.println("8.Rellenar banco con cuentas");
-        System.out.println("9.Ordenar cuentas(Descendente por saldo)");
+        System.out.println("8. Rellenar banco con cuentas");
+        System.out.println("9. Ordenar cuentas(Descendente por saldo)");
         System.out.println("10.Ordenar cuentas(Ascendente por saldo)");
-        System.out.println("11. Ordenar cuentas(Descendente por IBAN)");
-        System.out.println("12. Ordenar cuentas(Ascendente por IBAN)");
-        System.out.println("13. Guardar Datos");
-        System.out.println("14. Cargar Datos.");
-        System.out.println("15. Salir");
+        System.out.println("11.Ordenar cuentas(Descendente por IBAN)");
+        System.out.println("12.Ordenar cuentas(Ascendente por IBAN)");
+        System.out.println("13.Guardar Datos");
+        System.out.println("14.Cargar Datos.");
+        System.out.println("15.Salir");
         System.out.println("*******************************");
-        System.out.print("Seleccione una opcion: ");
+        System.out.print("Seleccione una opción: ");
     }
 
     public static void guardarDatos(Banco banco, String archivo) {

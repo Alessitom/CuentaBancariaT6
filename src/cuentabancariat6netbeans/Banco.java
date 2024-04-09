@@ -16,22 +16,20 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 public class Banco implements Serializable {
 
-    private static final long serialVersion = 1L;
+    private static final long serialVersionUID = 1L;
     private String nombre;
-    private final Set<Cuenta> cuentas;
+    private final Map<String, Cuenta> cuentas;
 
     public Banco(String nombre) {
         this.nombre = nombre;
-        this.cuentas = new LinkedHashSet<Cuenta>();
+        this.cuentas = new HashMap<>();
     }
 
     public String getNombre() {
@@ -43,32 +41,31 @@ public class Banco implements Serializable {
     }
 
     public boolean agregarCuenta(Cuenta cuenta) {
-        return cuentas.add(cuenta);
+        if (!cuentas.containsKey(cuenta.getIBAN())) {
+            cuentas.put(cuenta.getIBAN(), cuenta);
+            return true;
+        }
+        return false;
     }
 
     public String consultarCuenta(String iban) {
-        for (Cuenta cuenta : cuentas) {
-            if (cuenta.getIBAN().equals(iban)) {
-                return cuenta.toString();
-            }
+        Cuenta cuenta = cuentas.get(iban);
+        if (cuenta != null) {
+            return cuenta.toString();
         }
         return null;
     }
 
     public boolean borrarCuenta(String iban) {
-        Iterator<Cuenta> iteCuentas = cuentas.iterator();
-        while (iteCuentas.hasNext()) {
-            Cuenta c = iteCuentas.next();
-            if (c.getIBAN().equals(iban)) {
-                iteCuentas.remove();
-                return true;
-            }
+        if (cuentas.containsKey(iban)) {
+            cuentas.remove(iban);
+            return true;
         }
         return false;
     }
 
     public boolean ingresar(String iban, double importe) {
-        Cuenta cuenta = buscarCuenta(iban);
+        Cuenta cuenta = cuentas.get(iban);
         if (cuenta != null) {
             cuenta.ingresar(importe);
             return true;
@@ -77,18 +74,18 @@ public class Banco implements Serializable {
     }
 
     public void retirar(String iban, double importe) {
-        Cuenta cuenta = buscarCuenta(iban);
+        Cuenta cuenta = cuentas.get(iban);
         if (cuenta != null) {
             cuenta.retirar(importe);
         }
     }
 
     public boolean existeCuenta(String iban) {
-        return buscarCuenta(iban) != null;
+        return cuentas.containsKey(iban);
     }
 
     public double informaSaldo(String iban) {
-        Cuenta cuenta = buscarCuenta(iban);
+        Cuenta cuenta = cuentas.get(iban);
         if (cuenta != null) {
             return cuenta.getSaldo();
         }
@@ -101,7 +98,7 @@ public class Banco implements Serializable {
         salida.append("      cuenta                  Titular             DNI           Saldo\n");
         salida.append("====================   ====================    ===========   =============\n");
 
-        for (Cuenta cuenta : cuentas) {
+        for (Cuenta cuenta : cuentas.values()) {
             salida.append(String.format("%15s %20s %20s %15.2f\n",
                     cuenta.getIBAN(), cuenta.getTitular(), cuenta.getDocumento(), cuenta.getSaldo()));
             totalSaldo += cuenta.getSaldo();
@@ -114,12 +111,7 @@ public class Banco implements Serializable {
     }
 
     private Cuenta buscarCuenta(String iban) {
-        for (Cuenta cuenta : cuentas) {
-            if (cuenta.getIBAN().equals(iban)) {
-                return cuenta;
-            }
-        }
-        return null;
+        return cuentas.get(iban);
     }
 
     public void rellenarCuentas() {
@@ -158,32 +150,27 @@ public class Banco implements Serializable {
         return banco;
     }
 
-    public Set<Cuenta> getCuentas() {
-        return cuentas;
-    }
-
     public List<Cuenta> ordenarCuentasPorSaldoAscendente() {
-        List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas);
+        List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas.values());
         listaCuentas.sort(Comparator.comparingDouble(Cuenta::getSaldo));
         return listaCuentas;
     }
 
     public List<Cuenta> ordenarCuentasPorSaldoDescendente() {
-        List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas);
+        List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas.values());
         listaCuentas.sort(Comparator.comparingDouble(Cuenta::getSaldo).reversed());
         return listaCuentas;
     }
 
     public List<Cuenta> ordenarCuentasPorIBANAscendente() {
-        List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas);
+        List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas.values());
         listaCuentas.sort(Comparator.comparing(Cuenta::getIBAN));
         return listaCuentas;
     }
 
     public List<Cuenta> ordenarCuentasPorIBANDescendente() {
-        List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas);
+        List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas.values());
         listaCuentas.sort((c1, c2) -> c2.getIBAN().compareTo(c1.getIBAN()));
         return listaCuentas;
     }
-
 }
