@@ -5,10 +5,7 @@
 package cuentabancariat6netbeans;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 /**
