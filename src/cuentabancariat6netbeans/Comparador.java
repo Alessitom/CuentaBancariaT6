@@ -21,7 +21,7 @@ public class Comparador implements Comparator<Cuenta>{
             return comparacionPorTitular;
         } else {
             // Si los titulares son iguales, comparar por IBAN
-            return c1.compareToPorIBAN(c2);
+            return c2.compareToPorIBAN(c1);
         }
     }   
 }
