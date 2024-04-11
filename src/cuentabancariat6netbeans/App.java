@@ -5,7 +5,10 @@
 package cuentabancariat6netbeans;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -22,6 +25,7 @@ public class App {
      */
     public static void main(String[] args) throws DNIException {
         Banco banco = null;
+        Comparador comparador = null;
 
         try (Scanner scanner = new Scanner(System.in)) {
             boolean salir = false;
@@ -266,6 +270,17 @@ public class App {
 
                     case 13:
                         if (banco != null) {
+                            System.out.println("Ordenando por Titular...");
+                            banco.ordenarCuentasPorTitularYIBAN();
+                            System.out.println("Cuentas ordenadas correctamente.");
+
+                        } else {
+                            System.out.println("Debe crear un banco primero.");
+                        }
+                        break;
+
+                    case 14:
+                        if (banco != null) {
                             System.out.print("Ingrese el IBAN de la cuenta que desea consultar: ");
                             String ibanConsulta = scanner.nextLine();
                             String datosCuenta = banco.consultarCuenta(ibanConsulta);
@@ -280,7 +295,7 @@ public class App {
                         }
                         break;
 
-                    case 14:
+                    case 15:
                         if (banco == null) {
                             System.out.println("BANCO NO CREADO");
                             break;
@@ -288,7 +303,7 @@ public class App {
                         guardarDatos(banco, banco.getNombre() + ".dat");
                         break;
 
-                    case 15:
+                    case 16:
                         if (banco != null) {
                             System.out.println("Ya hay datos creados del banco " + banco.getNombre() + ". Si continúa se perderán. ¿Desea continuar?");
                             String respuesta;
@@ -305,7 +320,7 @@ public class App {
                         }
                         break;
 
-                    case 16:
+                    case 17:
 
                         System.out.println("Saliendo del programa...");
                         salir = true;
@@ -337,10 +352,11 @@ public class App {
         System.out.println("10.Ordenar cuentas(Ascendente por saldo)");
         System.out.println("11.Ordenar cuentas(Descendente por IBAN)");
         System.out.println("12.Ordenar cuentas(Ascendente por IBAN)");
-        System.out.println("13.Consultar cuenta(Por clave)");
-        System.out.println("14.Guardar Datos");
-        System.out.println("15.Cargar Datos.");
-        System.out.println("16.Salir");
+        System.out.println("13.Ordenar cuentas(Por titular)");
+        System.out.println("14.Consultar cuenta(Por clave)");
+        System.out.println("15.Guardar Datos");
+        System.out.println("16.Cargar Datos.");
+        System.out.println("17.Salir");
         System.out.println("*******************************");
         System.out.print("Seleccione una opción: ");
     }

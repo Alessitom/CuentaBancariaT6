@@ -15,6 +15,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -153,6 +154,16 @@ public class Banco implements Serializable {
 
     public void ordenarCuentasPorSaldoAscendente() {
         List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas.values());
+        Collections.sort(listaCuentas, (c1, c2) -> c1.compareTo(c2));
+        this.cuentas.clear();
+        for (Cuenta cuenta : listaCuentas) {
+            this.cuentas.put(cuenta.getIBAN(), cuenta);
+        }
+    }
+
+    /*
+     public void ordenarCuentasPorSaldoAscendente() {
+        List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas.values());
         listaCuentas.sort(Comparator.comparingDouble(Cuenta::getSaldo));
         this.cuentas.clear();
         for (Cuenta cuenta : listaCuentas) {
@@ -160,6 +171,7 @@ public class Banco implements Serializable {
         }
     }
 
+     */
     public void ordenarCuentasPorSaldoDescendente() {
         List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas.values());
         listaCuentas.sort(Comparator.comparingDouble(Cuenta::getSaldo).reversed());
@@ -168,6 +180,18 @@ public class Banco implements Serializable {
             this.cuentas.put(cuenta.getIBAN(), cuenta);
         }
     }
+
+    /*
+    public void ordenarCuentasPorSaldoDescendente() {
+    List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas.values());
+    Collections.sort(listaCuentas, (c1, c2) -> c2.compareTo(c1));
+    this.cuentas.clear();
+    for (Cuenta cuenta : listaCuentas) {
+        this.cuentas.put(cuenta.getIBAN(), cuenta);
+    }
+}
+
+     */
 
     public void ordenarCuentasPorIBANAscendente() {
         List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas.values());
@@ -187,4 +211,38 @@ public class Banco implements Serializable {
         }
     }
 
+    /*
+   public void ordenarCuentasPorIBANDescendente() {
+    List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas.values());
+    listaCuentas.sort(Comparator.comparing(Cuenta::getIBAN).reversed());
+    this.cuentas.clear();
+    for (Cuenta cuenta : listaCuentas) {
+        this.cuentas.put(cuenta.getIBAN(), cuenta);
+    }
 }
+
+}
+     */
+ 
+
+
+public void ordenarCuentasPorTitularYIBAN() {
+    if (!cuentas.isEmpty()) {
+        List<Cuenta> listaCuentas = new ArrayList<>(this.cuentas.values());
+        Collections.sort(listaCuentas, new Comparador());
+        this.cuentas.clear(); // Limpiar el mapa
+        for (Cuenta cuenta : listaCuentas) {
+            this.cuentas.put(cuenta.getIBAN(), cuenta); // Volver a insertar, manteniendo el orden por IBAN
+        }
+    } else {
+        System.out.println("No hay cuentas para ordenar.");
+    }
+}
+
+}
+
+
+
+
+    
+
