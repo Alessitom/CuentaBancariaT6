@@ -5,19 +5,13 @@
 package cuentabancariat6netbeans;
 
 /**
- * The type Dni exception.
  *
  * @author usumaniana
  */
-public class DNIException extends Exception{
-
-    /**
-     * Instantiates a new Dni exception.
-     *
-     * @param mensaje the mensaje
-     */
-    public DNIException(String mensaje) {
-        super(mensaje);
-    }
+public enum TipoCuenta {
+    AHORRO,
+    NOMINA,
+    CREDITO,
+    VALORES
 }
 

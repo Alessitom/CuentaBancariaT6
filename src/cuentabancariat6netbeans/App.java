@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
+ * The type App.
  *
  * @author Alex
  */
@@ -20,8 +21,10 @@ public class App {
     private static final String PATHNAME = "./archivos/";
 
     /**
+     * The entry point of application.
+     *
      * @param args the command line arguments
-     * @throws cuentabancariat6netbeans.DNIException
+     * @throws DNIException the dni exception
      */
     public static void main(String[] args) throws DNIException {
         Banco banco = null;
@@ -64,27 +67,28 @@ public class App {
 
                             while (!ibanValido) {
                                 if (banco.existeCuenta(iban)) {
-                                    System.out.println("No puedes usar este IBAN, ya está en uso, porfavor pon uno válido:");
+                                    System.out.println("No puedes usar este IBAN, ya está en uso, por favor pon uno válido:");
                                     iban = scanner.nextLine();
                                 } else {
-                                    System.out.println("IBAN creado con exito");
+                                    System.out.println("IBAN creado con éxito");
                                     ibanValido = true;
                                 }
-
                             }
+
                             System.out.print("Ingrese el titular de la cuenta: ");
                             String titular = scanner.nextLine();
                             boolean documentoValido = false;
+                            String documento = null;
 
                             while (!documentoValido) {
                                 System.out.println("Ingrese tu DNI o tu NIE");
-                                Documento = scanner.nextLine();
+                                documento = scanner.nextLine();
 
-                                if (Documento.toUpperCase().startsWith("X") || Documento.toUpperCase().startsWith("Y") || Documento.toUpperCase().startsWith("Z")) {
+                                if (documento.toUpperCase().startsWith("X") || documento.toUpperCase().startsWith("Y") || documento.toUpperCase().startsWith("Z")) {
                                     // Validar NIE
                                     try {
-                                        if (Cuenta.validarNIE(Documento)) {
-                                            System.out.println("El NIE " + Documento + " es válido.");
+                                        if (Cuenta.validarNIE(documento)) {
+                                            System.out.println("El NIE " + documento + " es válido.");
                                             documentoValido = true;
                                         }
                                     } catch (DNIException e) {
@@ -93,8 +97,8 @@ public class App {
                                 } else {
                                     // Validar NIF
                                     try {
-                                        if (Cuenta.validarNIF(Documento)) {
-                                            System.out.println("El DNI " + Documento + " es válido.");
+                                        if (Cuenta.validarNIF(documento)) {
+                                            System.out.println("El DNI " + documento + " es válido.");
                                             documentoValido = true;
                                         }
                                     } catch (DNIException e) {
@@ -105,12 +109,37 @@ public class App {
 
                             System.out.print("Ingrese el saldo inicial de la cuenta: ");
                             double saldoInicial = scanner.nextDouble();
+                            System.out.println("Ingrese de qué tipo es su cuenta (1.AHORRO, 2.NOMINA, 3.CREDITO, 4.VALORES):");
 
-                            Cuenta cuenta = new Cuenta(iban, titular, saldoInicial, Documento);
-                            if (banco.agregarCuenta(cuenta)) {
-                                System.out.println("Cuenta agregada al banco.");
+                            int tipoOpcion = scanner.nextInt();
+                            TipoCuenta tipo = null;
+
+                            switch (tipoOpcion) {
+                                case 1:
+                                    tipo = TipoCuenta.AHORRO;
+                                    break;
+                                case 2:
+                                    tipo = TipoCuenta.NOMINA;
+                                    break;
+                                case 3:
+                                    tipo = TipoCuenta.CREDITO;
+                                    break;
+                                case 4:
+                                    tipo = TipoCuenta.VALORES;
+                                    break;
+                                default:
+                                    System.out.println("No existe ese tipo");
+                            }
+
+                            if (tipo != null) {
+                                Cuenta nuevaCuenta = new Cuenta(iban, titular, saldoInicial, documento, tipo);
+                                if (banco.agregarCuenta(nuevaCuenta)) {
+                                    System.out.println("Cuenta agregada al banco.");
+                                } else {
+                                    System.out.println("No se pudo agregar la cuenta.");
+                                }
                             } else {
-                                System.out.println("No se pudo agregar la cuenta.");
+                                System.out.println("No se creó la cuenta debido a un tipo de cuenta inválido.");
                             }
                         } else {
                             System.out.println("Debe crear un banco primero.");
@@ -337,6 +366,9 @@ public class App {
         }
     }
 
+    /**
+     * Mostrar menu.
+     */
     public static void mostrarMenu() {
         System.out.println("*******************************");
         System.out.println("Menú:");
@@ -361,6 +393,12 @@ public class App {
         System.out.print("Seleccione una opción: ");
     }
 
+    /**
+     * Guardar datos.
+     *
+     * @param banco the banco
+     * @param archivo the archivo
+     */
     public static void guardarDatos(Banco banco, String archivo) {
         try {
             banco.guardarEstado(PATHNAME + archivo);
@@ -370,6 +408,12 @@ public class App {
         }
     }
 
+    /**
+     * Recuperar datos banco.
+     *
+     * @param archivo the archivo
+     * @return the banco
+     */
     public static Banco recuperarDatos(String archivo) {
         try {
             Banco bancoRecuperado = Banco.cargarEstado(PATHNAME + archivo);

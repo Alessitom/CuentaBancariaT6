@@ -8,7 +8,7 @@ import java.util.Comparator;
 
 /**
  *
- * @author usumaniana
+ * @author Alex
  */
 public class Comparador implements Comparator<Cuenta>{
 
