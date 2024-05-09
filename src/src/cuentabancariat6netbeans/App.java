@@ -327,6 +327,35 @@ public class App {
                         break;
                     case 15:
                         if (banco != null) {
+                            System.out.print("Ingrese el nombre del archivo CSV para cargar cuentas: ");
+                            String archivoCuentas = scanner.nextLine();
+                            banco.cargarArchivoCSV(PATHNAME + archivoCuentas + ".csv");
+                        } else {
+                            System.out.println("Debe crear un banco primero.");
+                        }
+                        break;
+
+                    case 16:
+                        if (banco != null) {
+                            System.out.print("Ingrese el nombre del archivo CSV para cargar movimientos: ");
+                            String archivoMovimientos = scanner.nextLine();
+                            banco.cargarMovimientosCSV(PATHNAME + archivoMovimientos + ".csv");
+                        } else {
+                            System.out.println("Debe crear un banco primero.");
+                        }
+                        break;
+
+                    case 17:
+                        if (banco != null) {
+                            System.out.println("Listado de Movimientos:");
+                            System.out.println(banco.listadoMovimientos());
+                        } else {
+                            System.out.println("Debe crear un banco primero.");
+                        }
+                        break;
+
+                    case 18:
+                        if (banco != null) {
                             System.out.print("Ingrese el IBAN de la cuenta para obtener el límite de saldo: ");
                             String ibanLimiteSaldo = scanner.nextLine();
                             double limiteSaldo = banco.obtenerLimiteSaldo(ibanLimiteSaldo);
@@ -340,7 +369,7 @@ public class App {
                         }
                         break;
 
-                    case 16:
+                    case 19:
                         if (banco != null) {
                             System.out.print("Ingrese la fecha en formato yyyy-MM-dd para calcular la liquidación de cuentas: ");
                             String fechaLiquidacionStr = scanner.nextLine();
@@ -356,7 +385,7 @@ public class App {
                         }
                         break;
 
-                    case 17:
+                    case 20:
                         if (banco == null) {
                             System.out.println("BANCO NO CREADO");
                             break;
@@ -364,7 +393,7 @@ public class App {
                         guardarDatos(banco, banco.getNombre() + ".dat");
                         break;
 
-                    case 18:
+                    case 21:
                         if (banco != null) {
                             System.out.println("Ya hay datos creados del banco " + banco.getNombre() + ". Si continúa se perderán. ¿Desea continuar?");
                             String respuesta;
@@ -381,7 +410,7 @@ public class App {
                         }
                         break;
 
-                    case 19:
+                    case 22:
 
                         System.out.println("Saliendo del programa...");
                         salir = true;
@@ -418,11 +447,14 @@ public class App {
         System.out.println("12.Ordenar cuentas(Ascendente por IBAN)");
         System.out.println("13.Ordenar cuentas(Por titular)");
         System.out.println("14.Consultar cuenta(Por clave)");
-        System.out.println("15. Obtener límite de saldo de una cuenta");
-        System.out.println("16. Calcular liquidación de cuentas hasta una fecha");
-        System.out.println("17.Guardar Datos");
-        System.out.println("18.Cargar Datos.");
-        System.out.println("19.Salir");
+        System.out.println("15.Cargar cuentas por csv");
+        System.out.println("16.Cargar Movimientos por csv");
+        System.out.println("17.Listado de movimientos");
+        System.out.println("18. Obtener límite de saldo de una cuenta");
+        System.out.println("19. Calcular liquidación de cuentas hasta una fecha");
+        System.out.println("20.Guardar Datos");
+        System.out.println("21.Cargar Datos.");
+        System.out.println("22.Salir");
         System.out.println("*******************************");
         System.out.print("Seleccione una opción: ");
     }

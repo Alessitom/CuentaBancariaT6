@@ -8,12 +8,15 @@ package src.cuentabancariat6netbeans;
  *
  * @author Alex
  */
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import static java.lang.Math.random;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -27,8 +30,12 @@ import java.util.Random;
 public class Banco implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private String nombre;
+    private String nombre, cuentasIBAN, dniscuentas, nombrescuentas;
+    private double saldocuentas;
+    private TipoCuenta tipo;
     private final Map<String, Cuenta> cuentas;
+    private final List<String> ListaMovimientos = new ArrayList<>();
+    private static final String comillas = "\"";
 
     public Banco(String nombre) {
         this.nombre = nombre;
@@ -238,4 +245,63 @@ public class Banco implements Serializable {
             }
         }
     }
+
+    public void cargarArchivoCSV(String archivo) {
+        int cuentas = 0;
+        Random random = new Random();
+
+        try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                String[] partes = linea.split(";");
+                cuentasIBAN = partes[0].replaceAll(comillas, "");
+                nombrescuentas = partes[1].replaceAll(comillas, "");
+                dniscuentas = partes[2].replaceAll(comillas, "");
+                saldocuentas = Double.parseDouble(partes[3].replaceAll(comillas, ""));
+                int tipoIndex = random.nextInt(4); // 4 es el número de tipos de cuenta en el enum TipoCuenta
+                tipo = TipoCuenta.values()[tipoIndex];
+                Cuenta nuevaCuenta = new Cuenta(cuentasIBAN, nombrescuentas, saldocuentas, dniscuentas, tipo); // Tipo de cuenta a elegir según tu lógica
+                agregarCuenta(nuevaCuenta);
+                cuentas++;
+
+            }
+            System.out.println("Han sido cargadas " + cuentas + " cuentas nuevas del archivo " + archivo + ".csv");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void cargarMovimientosCSV(String archivo) {
+        int movimientosRegistrados = 0;
+        try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = lector.readLine()) != null) {
+                String[] partes = linea.split(";");
+                String numeroCuenta = partes[0].replaceAll(comillas, "");
+                String tipoMovimiento = partes[1].replaceAll(comillas, "");
+                double cantidad = Double.parseDouble(partes[2].replaceAll(comillas, ""));
+
+                ListaMovimientos.add(String.format("%s - %s: %.2f", numeroCuenta, tipoMovimiento, cantidad));
+                movimientosRegistrados++;
+
+            }
+            System.out.println("Se han registrado " + movimientosRegistrados + " movimientos desde el archivo " + archivo + ".csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String listadoMovimientos() {
+        StringBuilder salida = new StringBuilder();
+        salida.append("Lista de Movimientos\n");
+        salida.append("====================\n");
+
+        for (String movimiento : ListaMovimientos) {
+            salida.append(movimiento).append("\n");
+        }
+
+        return salida.toString();
+    }
+
 }
